@@ -42,7 +42,7 @@ public enum Error {
     
     case serverError //= -500
     
-    case authorizationError //= -600
+    case unauthorized //= -600
     
     case preCallChecksFailed //= -700
     
@@ -73,7 +73,7 @@ extension Error : Codable, Equatable {
                 return -401
             case .serverError:
                 return -500
-            case .authorizationError:
+            case .unauthorized:
                 return -600
             case .preCallChecksFailed:
                 return -700
@@ -117,7 +117,7 @@ extension Error : Codable, Equatable {
         case -500:
             self = .serverError
         case -600:
-            self = .authorizationError
+            self = .unauthorized
         case -700:
             self = .preCallChecksFailed
         case -69:
