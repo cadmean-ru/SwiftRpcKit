@@ -3,5 +3,5 @@ import XCTest
 import SwiftRpcKitTests
 
 var tests = [XCTestCaseEntry]()
-tests += SwiftRpcKitTests.allTests()
+tests += RpcKitTests.allTests()
 XCTMain(tests)
