@@ -17,7 +17,8 @@ public class Function {
     }
     
     public func call<T: Decodable>(with args: Argument..., onResult callback: @escaping (T?, Error) -> Void) {
-        let call = Call(args: args, auth: "")
+        let accessToken = client.authTicketHolder.authTicket?.accessToken
+        let call = Call(args: args, auth: accessToken ?? "")
         
         guard let data = client.codec.encode(call) else { callback(nil, .encodingError); return }
         
@@ -28,6 +29,10 @@ public class Function {
             }
             
             guard let output: Output<T> = self.client.codec.decode(respData!) else { callback(nil, .decodingError); return }
+            
+            if let ticket = output.result as? AuthTicket {
+                self.client.authTicketHolder.authTicket = ticket
+            }
             
             callback(output.result, output.error)
         }

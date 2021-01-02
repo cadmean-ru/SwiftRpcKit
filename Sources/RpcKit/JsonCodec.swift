@@ -11,8 +11,27 @@ import Foundation
 public class JsonCodec: Codec {
     public var dataType: String = "application/json"
     
+    private let encoder: JSONEncoder
+    private let decoder: JSONDecoder
+    
+    private static let iso8601Full: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.timeZone = TimeZone.current
+        formatter.locale = Locale.current
+        return formatter
+    }()
+    
+    init() {
+        encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .formatted(JsonCodec.iso8601Full)
+        decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(JsonCodec.iso8601Full)
+    }
+    
     public func encode<T: Encodable>(_ obj: T) -> Data? {
-        guard let data = try? JSONEncoder().encode(obj) else {
+        guard let data = try? encoder.encode(obj) else {
             return nil
         }
         
@@ -20,7 +39,7 @@ public class JsonCodec: Codec {
     }
     
     public func decode<T: Decodable>(_ data: Data) -> T? {
-        guard let obj = try? JSONDecoder().decode(T.self, from: data) else {
+        guard let obj = try? decoder.decode(T.self, from: data) else {
             return nil
         }
         

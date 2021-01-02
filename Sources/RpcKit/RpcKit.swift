@@ -4,6 +4,7 @@ public class RpcClient {
     
     public var transportProvider: TransportProvider = HttpTransportProvider()
     public var codec: Codec = JsonCodec()
+    public var authTicketHolder: AuthTicketHolder = TransientHolder()
     
     public init(at url: String) {
         serverUrl = url
