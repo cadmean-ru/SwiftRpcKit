@@ -3,12 +3,12 @@ import XCTest
 
 final class RpcKitTests: XCTestCase {
     
-    let client = RpcClient(at: "http://testrpc.cadmean.ru")
+    let client = RpcClient(at: "http://localhost:5000")
     
     func testSum() {
         let expectation = XCTestExpectation(description: "Make call to sum rpc function")
         
-        client.function(of: "sum").call(with: Argument(of: 1), Argument(of: 2)) { (res: Int?, err) in
+        client.function(named: "test.addInt").call(with: Argument(of: 1), Argument(of: 2)) { (res: Int?, err) in
             XCTAssertEqual(res, 3, "Sum was not 3")
             expectation.fulfill()
         }
@@ -19,7 +19,7 @@ final class RpcKitTests: XCTestCase {
     func testConcat() {
         let expectation = XCTestExpectation(description: "Make call to concat rpc function")
         
-        client.function(of: "concat").call(with: Argument(of: "Hello,"), Argument(of: " world!")) { (res: String?, err) in
+        client.function(named: "test.concatString").call(with: Argument(of: "Hello,"), Argument(of: " world!")) { (res: String?, err) in
             XCTAssertEqual(res, "Hello, world!", "Strings were not equal")
             expectation.fulfill()
         }
@@ -33,7 +33,7 @@ final class RpcKitTests: XCTestCase {
         
         let expectation = XCTestExpectation(description: "Make call to square rpc function")
         
-        client.function(of: "square").call(with: Argument(of: num)) { (res: Double?, err) in
+        client.function(named: "test.squareDouble").call(with: Argument(of: num)) { (res: Double?, err) in
             XCTAssertEqual(res, expected)
             expectation.fulfill()
         }
@@ -44,8 +44,8 @@ final class RpcKitTests: XCTestCase {
     func testError() {
         let expectation = XCTestExpectation(description: "Make call to error rpc function")
         
-        client.function(of: "error").call(with: Argument(of: true)) { (res: String?, err) in
-            XCTAssertEqual(err, .custom(42))
+        client.function(named: "test.getException").call(with: Argument(of: true)) { (res: String?, err) in
+            XCTAssertEqual(err, .serverError)
             expectation.fulfill()
         }
         
@@ -63,16 +63,15 @@ final class RpcKitTests: XCTestCase {
         
         let expectation = XCTestExpectation(description: "Authorize by calling the auth rpc function. And then get user info.")
         
-        client.function(of: "auth").call(with: Argument(of: email), Argument(of: password)) { (ticket: AuthTicket?, err) in
+        client.function(named: "test.auth2").call(with: Argument(of: email), Argument(of: password)) { (ticket: AuthTicket?, err) in
             XCTAssertNotNil(ticket)
             XCTAssertNotNil(ticket?.accessToken)
             XCTAssertNotNil(ticket?.refreshToken)
             
             print("Auth ticket: \(String(describing: ticket))")
             
-            self.client.function(of: "user.get").call() { (user: User?, err) in
+            self.client.function(named: "test.getUserAuth").call(with: Argument(of: email)) { (user: User?, err) in
                 XCTAssertNotNil(user)
-                XCTAssertEqual(email, user?.email)
                 
                 print("User: \(String(describing: user))")
                 
@@ -86,7 +85,7 @@ final class RpcKitTests: XCTestCase {
     func testGetDate() {
         let expectation = XCTestExpectation(description: "Get current date by calling rpc function getDate")
         
-        client.function(of: "getDate").call() { (res: Date?, err) in
+        client.function(named: "test.getDate").call() { (res: Date?, err) in
             XCTAssertNotNil(res)
             
             print("Date: \(String(describing: res))")

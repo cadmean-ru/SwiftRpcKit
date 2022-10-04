@@ -13,7 +13,7 @@ public class HttpTransportProvider: TransportProvider {
         
         var request = URLRequest(url: url1)
         request.httpMethod = "POST"
-        request.setValue("2.1", forHTTPHeaderField: "Cadmean-RPC-Version")
+        request.setValue("3.0", forHTTPHeaderField: "Cadmean-RPC-Version")
         request.setValue(type, forHTTPHeaderField: "Content-Type")
         request.httpBody = data
         

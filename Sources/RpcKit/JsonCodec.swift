@@ -16,9 +16,9 @@ public class JsonCodec: Codec {
     
     private static let iso8601Full: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         formatter.calendar = Calendar(identifier: .iso8601)
-        formatter.timeZone = TimeZone.current
+        formatter.timeZone = TimeZone.init(secondsFromGMT: 0)
         formatter.locale = Locale.current
         return formatter
     }()

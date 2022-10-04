@@ -10,7 +10,7 @@ public class RpcClient {
         serverUrl = url
     }
     
-    public func function(of name: String) -> Function {
+    public func function(named name: String) -> Function {
         return Function(name: name, client: self)
     }
 }
